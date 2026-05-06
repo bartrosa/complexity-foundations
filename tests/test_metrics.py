@@ -1,10 +1,18 @@
 """Test metric registry and individual metrics on canonical cases."""
 
+import numpy as np
 from conway_foundations.games.arithmetic import clear_arithmetic_cache
-from conway_foundations.games.library import CANONICAL_LIBRARY_EXPANDED, ONE, UP, ZERO
+from conway_foundations.games.library import (
+    CANONICAL_LIBRARY_EXPANDED,
+    ONE,
+    STAR,
+    UP,
+    ZERO,
+)
 from conway_foundations.games.outcome import clear_outcome_cache
 from conway_foundations.synergy import METRIC_REGISTRY
 from conway_foundations.synergy.metrics_ei import EffectiveInformationMetric
+from conway_foundations.synergy.metrics_emergence import CausalEmergenceMetric
 from conway_foundations.synergy.metrics_kl import KLDivergenceMetric
 from conway_foundations.synergy.metrics_markov import MarkovEntropyRateMetric
 from conway_foundations.synergy.trajectories import (
@@ -65,3 +73,16 @@ def test_ei_bounded():
     assert result["ei"] >= 0
     assert result["ei_normalized"] >= 0
     assert result["ei_normalized"] <= 1.0
+
+
+def test_causal_emergence_not_always_zero():
+    """CE should vary across game pairs, not be uniformly flat."""
+    metric = CausalEmergenceMetric()
+    library = [ZERO, ONE, UP, STAR] * 4
+
+    ces = []
+    for pair in [(UP, STAR), (ONE, ZERO), (STAR, UP), (ZERO, ONE)]:
+        result = metric(*pair, library)
+        ces.append(result["causal_emergence"])
+
+    assert np.std(ces) > 0.01, f"CE values are flat: {ces}"

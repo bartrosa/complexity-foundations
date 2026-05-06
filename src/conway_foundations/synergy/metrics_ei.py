@@ -10,7 +10,13 @@ from conway_foundations.synergy.metrics import register_metric
 
 
 class EffectiveInformationMetric:
-    """EI of the mapping (o(g1+p1), o(g2+p2)) → o(g1+p1+g2+p2) under uniform pairs."""
+    """EI of the mapping (o(g1+p1), o(g2+p2)) → o(g1+p1+g2+p2) under uniform pairs.
+
+    NOTE: `num_distinct_compounds` is computed for diagnostics but typically has
+    very low variance across pairs (few distinct compound outcomes in a 4-class
+    space). It is excluded from primary structural analysis in
+    `synergy_library` but kept in CSV output.
+    """
 
     name = "effective_information"
 

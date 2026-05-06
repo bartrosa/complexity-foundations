@@ -11,12 +11,9 @@ class MarkovEntropyRateMetric:
     """Entropy rate H(o_{t+1} | o_t) under cumulative perturbation dynamics."""
 
     name = "markov_entropy_rate"
-    max_trajectory_steps = 8
-    # outcome(add(cur1, cur2)) is far costlier than marginal chains; keep shorter.
-    compound_trajectory_steps = 5
 
     def __call__(self, g1, g2, trajectory):
-        traj = trajectory[: self.max_trajectory_steps]
+        traj = list(trajectory)
         x1_traj = trajectory_outcomes(g1, traj)
         x2_traj = trajectory_outcomes(g2, traj)
 
@@ -25,7 +22,7 @@ class MarkovEntropyRateMetric:
 
         compound = []
         cur1, cur2 = g1, g2
-        for p in traj[: self.compound_trajectory_steps]:
+        for p in traj:
             cur1 = add(cur1, p)
             cur2 = add(cur2, p)
             compound.append(OUTCOME_TO_INT[outc(add(cur1, cur2))])

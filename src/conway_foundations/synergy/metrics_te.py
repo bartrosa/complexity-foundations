@@ -9,11 +9,9 @@ class TransferEntropyMetric:
     """TE(X→Y): how much X's past predicts Y's future beyond Y's own past."""
 
     name = "transfer_entropy"
-    # Cap cumulative disjunctive-sum depth — unconstrained Conway sums can diverge in runtime.
-    max_trajectory_steps = 8
 
     def __call__(self, g1, g2, trajectory):
-        traj = trajectory[: self.max_trajectory_steps]
+        traj = list(trajectory)
         x = trajectory_outcomes(g1, traj)
         y = trajectory_outcomes(g2, traj)
 
