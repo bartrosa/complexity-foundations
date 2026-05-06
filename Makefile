@@ -28,12 +28,24 @@ test:
 
 notebooks-run:
 	mkdir -p notebooks_executed
+	@if [ -f notebooks/synergy_library.ipynb ]; then \
+		echo "Running notebooks/synergy_library.ipynb..."; \
+		papermill notebooks/synergy_library.ipynb \
+			notebooks_executed/synergy_library.ipynb --kernel python3 || exit 1; \
+	fi
+	@if [ -f notebooks/robustness_priors.ipynb ]; then \
+		echo "Running notebooks/robustness_priors.ipynb..."; \
+		papermill notebooks/robustness_priors.ipynb \
+			notebooks_executed/robustness_priors.ipynb --kernel python3 || exit 1; \
+	fi
 	@for nb in notebooks/[0-9]*.ipynb notebooks/[a-z]*.ipynb; do \
-		if [ -f "$$nb" ]; then \
-			echo "Running $$nb..."; \
-			papermill "$$nb" "notebooks_executed/$$(basename $$nb)" \
-				--kernel python3 || exit 1; \
-		fi \
+		if [ ! -f "$$nb" ]; then continue; fi; \
+		case "$$(basename $$nb)" in \
+			synergy_library.ipynb|robustness_priors.ipynb) continue ;; \
+		esac; \
+		echo "Running $$nb..."; \
+		papermill "$$nb" "notebooks_executed/$$(basename $$nb)" \
+			--kernel python3 || exit 1; \
 	done
 
 notebooks-clean:
