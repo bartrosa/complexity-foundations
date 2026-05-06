@@ -28,8 +28,8 @@
 # %% tags=["parameters"]
 # Papermill parameters - override via papermill -p key value
 random_seed = 42
-output_dir = '../data'
-figures_dir = '../figures'
+output_dir = 'data'
+figures_dir = 'figures'
 n_jobs = -1
 
 
@@ -113,6 +113,36 @@ print(divergence_patterns.to_string())
 
 
 # %%
+# Outcome class structure of witnesses
+# Question: which (base_outcome, divergence_pattern) classes dominate?
+
+structure_df = df.copy()
+structure_df['compound_pair'] = structure_df.apply(
+    lambda r: tuple(sorted([r['compound_outcome_1'], r['compound_outcome_2']])),
+    axis=1,
+)
+
+class_summary = structure_df.groupby(
+    ['base_outcome', 'compound_pair']
+).size().reset_index(name='witness_count')
+
+class_summary.to_csv(output_dir / 'witness_class_structure.csv', index=False)
+print("Witness class structure:")
+print(class_summary.to_string(index=False))
+
+# Test hypothesis: does ∥ dominate compound divergences?
+parallel_in_compound = structure_df[
+    (structure_df['compound_outcome_1'] == '∥')
+    | (structure_df['compound_outcome_2'] == '∥')
+]
+_n = len(df)
+_pct = (100 * len(parallel_in_compound) / _n) if _n else 0.0
+print(
+    f"\nWitnesses with ∥ in compound: {len(parallel_in_compound)}/{_n} ({_pct:.1f}%)"
+)
+
+
+# %%
 fig, ax = plt.subplots(figsize=(10, 6))
 patterns = divergence_patterns.copy()
 patterns['label'] = patterns.apply(
@@ -134,6 +164,32 @@ result = check_outcome_is_morphism(games_only, n_jobs=n_jobs)
 print(f"Tested {result.tested_phi_count} candidate φ functions")
 print(f"Valid φ count: {result.valid_phi_count}")
 print(f"Is outcome an F-algebra morphism? {result.is_morphism}")
+
+
+# %%
+# For each unique witness pair, find minimum-depth perturbation that triggers divergence
+from conway_foundations.games.properties import depth as game_depth
+
+pair_depth_df = df.groupby(['g1_repr', 'g2_repr']).agg({
+    'perturbation_repr': lambda x: list(x.unique()),
+}).reset_index()
+
+pert_depth_map = {name: game_depth(g) for name, g in library}
+
+pair_depth_df['min_pert_depth'] = pair_depth_df['perturbation_repr'].apply(
+    lambda perts: min(pert_depth_map[p] for p in perts)
+)
+pair_depth_df['n_pert_witnesses'] = pair_depth_df['perturbation_repr'].apply(len)
+
+pair_depth_df.to_csv(output_dir / 'witness_pair_depths.csv', index=False)
+print("\nWitness pairs by min perturbation depth:")
+print(pair_depth_df.to_string(index=False))
+
+print(f"\nMean min perturbation depth: {pair_depth_df['min_pert_depth'].mean():.2f}")
+print(
+    "Pairs needing depth-1 perturbation: "
+    f"{(pair_depth_df['min_pert_depth'] == 1).sum()}/{len(pair_depth_df)}"
+)
 
 
 # %% [markdown]
