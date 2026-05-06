@@ -29,7 +29,7 @@ notebooks = [
     "jupyterlab>=4",
     "papermill>=2.5",
     "nbstripout>=0.7",
-    "jupytext>=1.16",
+    "jupytext>=1.19.1",
     "nbqa>=1.8",
     "nbval>=0.11",
     "ipywidgets>=8",
@@ -50,6 +50,7 @@ packages = ["src/conway_foundations"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+extend-exclude = ["notebooks/**/*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
