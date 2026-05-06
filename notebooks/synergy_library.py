@@ -28,24 +28,21 @@
 #
 # **Round C-revised.** Original Round C used Williams–Beer PID only; inconclusive effects plus `dit`/NumPy 2.x blocked BROJA/PPID.
 #
-# Cumulative-sum metrics sample perturbations from `trajectories.DEFAULT_TRAJECTORY_COMPONENT_NAMES` (default: `{ZERO, ONE, NEG_ONE, STAR}` — ↑/↓ omitted because repeated sums blow up). Transfer entropy / marginal Markov chains use **8** cumulative steps; the compound-sum branch in Markov uses **5** steps (`metrics_markov.compound_trajectory_steps`) because `outcome(add(cur1, cur2))` dominates runtime.
+# Cumulative-sum metrics sample perturbations from `trajectories.DEFAULT_TRAJECTORY_COMPONENT_NAMES` (default: `{ZERO, ONE, NEG_ONE, STAR}` — ↑/↓ omitted because repeated sums blow up). Transfer entropy and Markov metrics now use the **full** sampled trajectory length **`trajectory_length`** (canonicalized `add` keeps runtime manageable).
 #
 # **Why this notebook can pin all CPUs for a long time:** for each unordered pair you run several metrics; `effective_information` and `causal_emergence` iterate over **all ordered pairs of perturbations** from the library (size \(N^2\) in the number of games). With ~171 pairs and `n_jobs=-1`, joblib saturates every core — that is expected for this workload, not a hang. For interactive runs lower **`n_jobs`**, set **`pair_limit`**, or set **`include_heavy_metrics = False`** (skips EI + causal emergence).
 #
 
 # %% tags=["parameters"]
-import os
-
 random_seed = 42
 output_dir = "data"
 figures_dir = "figures"
-# Default: use half the logical CPUs (capped) so the machine stays responsive.
-# Papermill: `-p n_jobs -1` for a full fan-out overnight run.
-n_jobs = max(1, min(8, (os.cpu_count() or 4) // 2))
+n_jobs = -1
 # None = all pairs; set e.g. `40` for a fast smoke run.
 pair_limit = None
 # False skips effective_information + causal_emergence (largest cost per pair).
 include_heavy_metrics = True
+trajectory_length = 20
 
 
 # %%
@@ -93,7 +90,7 @@ print(f"Metrics registered: {list(METRIC_REGISTRY.keys())}")
 
 
 # %%
-trajectory_t20 = generate_trajectory(library, length=20, seed=random_seed)
+trajectory_t20 = generate_trajectory(library, length=trajectory_length, seed=random_seed)
 independent_perturbations = generate_independent_perturbations(library)
 
 print(f"Trajectory length: {len(trajectory_t20)} (sampled from low-depth pool)")
@@ -184,9 +181,11 @@ df.head()
 
 # %%
 metric_cols = [c for c in df.columns if "__" in c and "error" not in c]
-print(f"Metric columns: {len(metric_cols)}")
+# Exclude diagnostic / low-variance columns from primary structural analysis
+PRIMARY_METRIC_COLS = [c for c in metric_cols if "num_distinct_compounds" not in c]
+print(f"Metric columns: {len(metric_cols)} (primary analysis: {len(PRIMARY_METRIC_COLS)})")
 
-metric_corr = df[metric_cols].corr(method="spearman")
+metric_corr = df[PRIMARY_METRIC_COLS].corr(method="spearman")
 metric_corr = metric_corr.fillna(0.0)
 metric_corr.to_csv(output_dir / "metric_correlations.csv")
 
@@ -229,7 +228,7 @@ plt.show()
 properties = ["avg_depth", "avg_num_options", "avg_fuzzy_count", "avg_canonical_size"]
 
 structural_corr_data = []
-for metric in metric_cols:
+for metric in PRIMARY_METRIC_COLS:
     if df[metric].nunique() < 2:
         continue
     for prop in properties:
@@ -246,7 +245,7 @@ struct_corr_df = pd.DataFrame(structural_corr_data)
 struct_corr_df.to_csv(output_dir / "structural_correlations.csv", index=False)
 
 pivot = struct_corr_df.pivot(index="metric", columns="property", values="spearman_r")
-fig_h = max(6, len(metric_cols) * 0.35)
+fig_h = max(6, pivot.shape[0] * 0.35)
 fig, ax = plt.subplots(figsize=(8, fig_h))
 sns.heatmap(
     pivot,
@@ -283,14 +282,13 @@ def bootstrap_spearman(x: pd.Series, y: pd.Series, n_boot: int = 500, seed: int 
     return lo, hi
 
 
-top_corrs = (
+bootstrap_results = []
+top_corrs_primary = (
     struct_corr_df.assign(abs_r=lambda d: d["spearman_r"].abs())
     .nlargest(10, "abs_r")
     .drop(columns="abs_r")
 )
-
-bootstrap_results = []
-for _, row in top_corrs.iterrows():
+for _, row in top_corrs_primary.iterrows():
     ci_low, ci_high = bootstrap_spearman(df[row["property"]], df[row["metric"]])
     bootstrap_results.append(
         {
@@ -330,7 +328,7 @@ nonparallel_pairs = df[df["base_class"].isin(["L", "R"])]
 print(f"∥-pairs: {len(parallel_pairs)}, L/R-pairs: {len(nonparallel_pairs)}")
 
 class_test_results = []
-for metric in metric_cols:
+for metric in PRIMARY_METRIC_COLS:
     if df[metric].nunique() < 2:
         continue
     if len(parallel_pairs) >= 3 and len(nonparallel_pairs) >= 3:
@@ -372,8 +370,8 @@ robust_pairs = bootstrap_df[bootstrap_df["robust"]] if len(bootstrap_df) else bo
 print(f"Robust (metric, property) correlations: {len(robust_pairs)}")
 
 metric_pairs_strong = []
-for i, m1 in enumerate(metric_cols):
-    for j, m2 in enumerate(metric_cols):
+for i, m1 in enumerate(PRIMARY_METRIC_COLS):
+    for j, m2 in enumerate(PRIMARY_METRIC_COLS):
         if i < j and abs(metric_corr.loc[m1, m2]) > 0.6:
             metric_pairs_strong.append((m1, m2, metric_corr.loc[m1, m2]))
 print(f"Metric pairs with |ρ| > 0.6: {len(metric_pairs_strong)}")
