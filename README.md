@@ -33,3 +33,4 @@ make verify
 | Round | Hypothesis | Verdict | Papers affected |
 |-------|------------|---------|-----------------|
 | A | bootstrap | pending | infrastructure |
+| B | outcome not F-algebra morphism under `+` | PASS | witness search + φ obstruction |
