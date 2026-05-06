@@ -1,0 +1,46 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[dev,notebooks,synergy]"
+      - name: Lint
+        run: |
+          ruff check src/ tests/
+          nbqa ruff notebooks/
+      - name: Type check
+        run: mypy src/
+      - name: Tests
+        run: pytest tests/ --cov=conway_foundations
+      - name: Execute notebooks
+        run: |
+          mkdir -p notebooks_executed
+          for nb in notebooks/[0-9]*.ipynb; do
+            if [ -f "$nb" ]; then
+              papermill "$nb" "notebooks_executed/$(basename $nb)" \
+                --kernel python3
+            fi
+          done
+      - name: Upload executed notebooks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: executed-notebooks-${{ github.sha }}
+          path: notebooks_executed/
+          retention-days: 14
