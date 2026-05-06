@@ -16,6 +16,35 @@ Append-only record. Each round documents what survived, what died, why.
 - If PARTIAL: Mediano letter must reframe.
 - If PASS: paper A and Mediano letter foundation confirmed (within finite-library obstruction checks).
 
+## Round C-revised: cleanup pass (consolidation, not new experiment)
+
+### What was fixed
+
+1. **Canonical form reduction** — Implemented in `games/canonical.py` (recursive `≤`, domination, reversibility to fixpoint). Integrated into `games/arithmetic.py` so `add` / `neg` return canonical forms; **`add_raw`** remains for internal recursion.
+2. **Surreal number fast path** — `games/surreal.py` recognizes dyadic rationals; **`add`** uses **`add_as_numbers`** when both summands are numbers (avoids blowing up integer chains).
+3. **Causal emergence** — Replaced incorrect `EI(inputs, inputs)` baseline with **EI_macro − max(EI_micro_g1, EI_micro_g2)** (`metrics_emergence.py`).
+4. **`num_distinct_compounds`** — Documented as diagnostic; excluded from primary correlation/clustering in **`synergy_library`** via **`PRIMARY_METRIC_COLS`**.
+5. **Trajectory metrics** — Transfer entropy and Markov entropy rate use the **full** sampled trajectory (removed fixed 8/5-step clamps); **`trajectory_length`** parameter defaults to **20**.
+
+### Performance sanity check
+
+- Twenty cumulative **`STAR`** sums + **`outcome`** complete in **≪ 1 s** after canonicalization (see inline benchmark in verification).
+
+### Re-run results (populate locally after full `papermill`)
+
+- Cluster structure: *[after full run]*
+- Top metric × structural property correlations (bootstrap CI): *[after full run]*
+- Class separation by metric: *[after full run]*
+- Causal emergence variance: *[after full run]*
+- Verdict: *[after full run]*
+
+### Implications for Mediano letter
+
+- Quantitative claims that survive bootstrap: *[after full run]*
+- Recommended framing: *[TBD]*
+
+---
+
 ## Round C: PID synergy systematic
 
 - Refined hypotheses based on Round B finding (most witnesses are ∥-class).
