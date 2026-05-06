@@ -34,3 +34,4 @@ make verify
 |-------|------------|---------|-----------------|
 | A | bootstrap | pending | infrastructure |
 | B | outcome not F-algebra morphism under `+` | PASS | witness search + φ obstruction |
+| C | PID synergy systematic (H1 ∥ vs L/R, H2 fuzzy, H3 method agreement) | FAIL / H3 GRACEFUL_FAIL | Mediano letter — no quantitative PID claims without stronger evidence + working `dit` |
