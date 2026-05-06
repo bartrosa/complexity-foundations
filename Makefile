@@ -1,8 +1,9 @@
-.PHONY: install verify lint type-check test notebooks-run notebooks-clean clean help
+.PHONY: install install-pip verify lint type-check test notebooks-run notebooks-clean clean help
 
 help:
 	@echo "Targets:"
-	@echo "  install         - install package with all extras"
+	@echo "  install         - uv sync with all extras (dev + notebooks + synergy + topology)"
+	@echo "  install-pip     - pip install -e \".[all]\" (alternative to uv)"
 	@echo "  verify          - run lint + type-check + test + notebooks"
 	@echo "  lint            - ruff check src/ tests/ + notebooks"
 	@echo "  type-check      - mypy src/"
@@ -12,6 +13,9 @@ help:
 	@echo "  clean           - remove caches and executed notebooks"
 
 install:
+	uv sync --all-extras
+
+install-pip:
 	pip install -e ".[all]"
 
 verify: lint type-check test notebooks-run
@@ -38,10 +42,20 @@ notebooks-run:
 		papermill notebooks/robustness_priors.ipynb \
 			notebooks_executed/robustness_priors.ipynb --kernel python3 || exit 1; \
 	fi
+	@if [ -f notebooks/gc_phi_homology.ipynb ]; then \
+		echo "Running notebooks/gc_phi_homology.ipynb..."; \
+		papermill notebooks/gc_phi_homology.ipynb \
+			notebooks_executed/gc_phi_homology.ipynb --kernel python3 || exit 1; \
+	fi
+	@if [ -f notebooks/dpll_correlation.ipynb ]; then \
+		echo "Running notebooks/dpll_correlation.ipynb..."; \
+		papermill notebooks/dpll_correlation.ipynb \
+			notebooks_executed/dpll_correlation.ipynb --kernel python3 || exit 1; \
+	fi
 	@for nb in notebooks/[0-9]*.ipynb notebooks/[a-z]*.ipynb; do \
 		if [ ! -f "$$nb" ]; then continue; fi; \
 		case "$$(basename $$nb)" in \
-			synergy_library.ipynb|robustness_priors.ipynb) continue ;; \
+			synergy_library.ipynb|robustness_priors.ipynb|gc_phi_homology.ipynb|dpll_correlation.ipynb) continue ;; \
 		esac; \
 		echo "Running $$nb..."; \
 		papermill "$$nb" "notebooks_executed/$$(basename $$nb)" \

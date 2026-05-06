@@ -42,10 +42,16 @@ synergy = [
 ]
 topology = [
     "gudhi>=3.9",
+    "pingouin>=0.5",
+    "scikit-learn>=1.4",
 ]
 all = [
     "conway-foundations[dev,notebooks,synergy,topology]",
 ]
+
+# Plain `uv sync` installs only [project.dependencies]. For dev + notebooks + synergy + topology:
+#   uv sync --all-extras
+# or `make install` (same as `pip install -e ".[all]"`).
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/conway_foundations"]
