@@ -99,7 +99,7 @@ def joint_mutual_information(joint: dict[tuple[int, int, int], float]) -> float:
 
 
 def williams_beer_pid(x1: np.ndarray, x2: np.ndarray, y: np.ndarray) -> dict[str, float]:
-    """Williams-Beer 2010 PID for two sources onto Y."""
+    """Classic partial-information decomposition for two sources onto Y."""
     joint = joint_distribution(x1, x2, y)
     p_y = _marginal(joint, 2)
 
@@ -186,7 +186,7 @@ def compute_pid(
     y: np.ndarray,
     method: PIDMethod = "williams-beer",
 ) -> dict[str, float | str]:
-    """Compute PID; BROJA/PPID fall back to Williams-Beer if dit fails."""
+    """Compute PID; BROJA/PPID fall back to the default two-source decomposition if dit fails."""
     if method == "williams-beer":
         return cast(dict[str, float | str], williams_beer_pid(x1, x2, y))
     try:

@@ -114,7 +114,7 @@ class TestPerformance:
 
         assert canonical_size(canon) < 100
 
-    def test_mediano_witness_still_holds(self):
+    def test_canonical_nonhomomorphism_witness_still_holds(self):
         assert outcome(add(UP, STAR)) == "∥"
         assert outcome(add(ONE, STAR)) == "L"
 

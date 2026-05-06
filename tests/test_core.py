@@ -76,11 +76,11 @@ class TestArithmetic:
         assert outcome(add(ONE, NEG_ONE)) == "="
 
     def test_canonical_witness_up_star(self):
-        """The Mediano letter witness."""
+        """Canonical non-homomorphism witness (↑ + *)."""
         assert outcome(add(UP, STAR)) == "∥"
 
     def test_canonical_witness_one_star(self):
-        """The Mediano letter contrast."""
+        """Contrast pair (1 + *)."""
         assert outcome(add(ONE, STAR)) == "L"
 
     def test_zero_is_identity(self):

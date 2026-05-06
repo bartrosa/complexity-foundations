@@ -1,4 +1,4 @@
-"""Effective Information (Hoel) — causal structure at coarse-graining."""
+"""Effective information — causal structure at coarse-graining."""
 
 from itertools import product
 

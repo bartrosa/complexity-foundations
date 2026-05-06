@@ -1,4 +1,4 @@
-"""Integrated information Φ_2.5 — Mediano-Rosas-style synergistic MI."""
+"""Integrated information Φ_2.5 — synergistic mutual information (Φ-style)."""
 
 import numpy as np
 

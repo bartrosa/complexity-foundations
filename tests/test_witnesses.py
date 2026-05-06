@@ -7,7 +7,7 @@ from conway_foundations.games.library import NEG_ONE, ONE, STAR, UP, ZERO
 from conway_foundations.games.outcome import outcome
 
 
-def test_mediano_witness_exact():
+def test_canonical_nonhomomorphism_witness():
     assert outcome(UP) == "L"
     assert outcome(ONE) == "L"
     assert outcome(add(UP, STAR)) == "∥"
@@ -18,10 +18,10 @@ def test_witnesses_exist_in_minimal_library():
     library = [("ONE", ONE), ("UP", UP), ("STAR", STAR)]
     witnesses = find_witnesses(library, library)
     assert len(witnesses) >= 1
-    found_mediano = any(
+    found_canonical_witness = any(
         {w.g1_repr, w.g2_repr} == {"UP", "ONE"} and w.perturbation_repr == "STAR" for w in witnesses
     )
-    assert found_mediano
+    assert found_canonical_witness
 
 
 def test_outcome_not_morphism():

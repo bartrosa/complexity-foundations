@@ -47,7 +47,7 @@ def test_redundant_dominates():
 
 
 def test_pid_for_canonical_witness_runs():
-    """Smoke test on the Mediano witness pair."""
+    """Smoke test on the canonical non-homomorphism witness pair."""
     library = [ZERO, ONE, UP, STAR]
     x1, x2, y = game_pair_to_distribution(UP, ONE, library)
     result = compute_pid(x1, x2, y, method="williams-beer")

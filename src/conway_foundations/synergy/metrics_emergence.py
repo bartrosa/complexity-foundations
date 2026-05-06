@@ -1,4 +1,4 @@
-"""Causal emergence (Comolatti–Hoel style): macro EI − max micro EI."""
+"""Causal emergence: macro effective information minus max part-level EI."""
 
 from itertools import product
 
