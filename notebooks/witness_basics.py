@@ -22,7 +22,7 @@
 #
 # Survive criterion: ≥5 distinct witnesses AND no φ works.
 #
-# Source paper / claim: Mediano letter contrast (↑+* vs 1+*); structural obstruction to outcome-only fusion rule.
+# Canonical contrast: (↑ + *) vs (1 + *); structural obstruction to outcome-only fusion rule (short paper).
 #
 
 # %% tags=["parameters"]
@@ -83,17 +83,17 @@ perturbations = library
 
 
 # %%
-mediano_o_up_star = outcome(add(UP, STAR))
-mediano_o_one_star = outcome(add(ONE, STAR))
+o_up_plus_star = outcome(add(UP, STAR))
+o_one_plus_star = outcome(add(ONE, STAR))
 print(f"o(UP) = {outcome(UP)}, o(ONE) = {outcome(ONE)}  -> both 'L'")
-print(f"o(UP + STAR) = {mediano_o_up_star}  (expected: ∥)")
-print(f"o(ONE + STAR) = {mediano_o_one_star}  (expected: L)")
-mediano_witness_holds = (
+print(f"o(UP + STAR) = {o_up_plus_star}  (expected: ∥)")
+print(f"o(ONE + STAR) = {o_one_plus_star}  (expected: L)")
+canonical_witness_holds = (
     outcome(UP) == outcome(ONE) == 'L'
-    and mediano_o_up_star == '∥'
-    and mediano_o_one_star == 'L'
+    and o_up_plus_star == '∥'
+    and o_one_plus_star == 'L'
 )
-print(f"Mediano witness: {mediano_witness_holds}")
+print(f"Canonical non-homomorphism witness: {canonical_witness_holds}")
 
 
 # %%

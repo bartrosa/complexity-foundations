@@ -26,7 +26,7 @@
 #
 # **Survive criterion:** Either ≥2 metrics cluster and correlate with structure, or at least one metric has ρ > 0.5 with a property (bootstrap-backed).
 #
-# **Round C-revised.** Original Round C used Williams–Beer PID only; inconclusive effects plus `dit`/NumPy 2.x blocked BROJA/PPID.
+# **Round C-revised.** Original Round C used only the default PID decomposition; inconclusive effects plus `dit`/NumPy 2.x blocked BROJA/PPID.
 #
 # Cumulative-sum metrics sample perturbations from `trajectories.DEFAULT_TRAJECTORY_COMPONENT_NAMES` (default: `{ZERO, ONE, NEG_ONE, STAR}` — ↑/↓ omitted because repeated sums blow up). Transfer entropy and Markov metrics now use the **full** sampled trajectory length **`trajectory_length`** (canonicalized `add` keeps runtime manageable).
 #
