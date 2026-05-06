@@ -11,10 +11,10 @@ Append-only record. Each round documents what survived, what died, why.
 ## Round B: non-homomorphism witnesses
 
 - Tested: systematic witness search across canonical library (+ switches); exhaustive φ search with commutative + zero-identity reductions (4096 candidates).
-- Verdict: **PASS** — ≥5 distinct base pairs `(g1, g2)` with matching outcomes but divergent compounds under some perturbation; **no** φ: 4×4→4 agrees with all library compound outcomes (valid φ count 0). Mediano contrast (↑+* vs 1+*) reproduced.
-- If FAIL: Mediano letter framework broken — alert before any further rounds.
-- If PARTIAL: Mediano letter must reframe.
-- If PASS: paper A and Mediano letter foundation confirmed (within finite-library obstruction checks).
+- Verdict: **PASS** — ≥5 distinct base pairs `(g1, g2)` with matching outcomes but divergent compounds under some perturbation; **no** φ: 4×4→4 agrees with all library compound outcomes (valid φ count 0). Canonical non-homomorphism contrast (↑+* vs 1+*) reproduced.
+- If FAIL: short-paper narrative on outcome fusion breaks — alert before any further rounds.
+- If PARTIAL: short paper must reframe.
+- If PASS: witness-search foundation confirmed for Paper A / short paper (within finite-library obstruction checks).
 
 ## Round C-revised: cleanup pass (consolidation, not new experiment)
 
@@ -38,7 +38,7 @@ Append-only record. Each round documents what survived, what died, why.
 - Causal emergence variance: *[after full run]*
 - Verdict: *[after full run]*
 
-### Implications for Mediano letter
+### Implications for the short paper
 
 - Quantitative claims that survive bootstrap: *[after full run]*
 - Recommended framing: *[TBD]*
@@ -48,8 +48,52 @@ Append-only record. Each round documents what survived, what died, why.
 ## Round C: PID synergy systematic
 
 - Refined hypotheses based on Round B finding (most witnesses are ∥-class).
-- **H1 verdict (∥-pairs have higher synergy):** FAIL — median Williams–Beer synergy 0.2120 bits (∥-base pairs) vs 0.1441 bits (L/R-base pairs); ratio 1.47× (hypothesis required \>2×); Mann–Whitney one-sided *p* = 0.188 (kill threshold: distinguishability requires *p* \< 0.1 for “not distinguishable” failure mode).
+- **H1 verdict (∥-pairs have higher synergy):** FAIL — median PID synergy (WB implementation) 0.2120 bits (∥-base pairs) vs 0.1441 bits (L/R-base pairs); ratio 1.47× (hypothesis required \>2×); Mann–Whitney one-sided *p* = 0.188 (kill threshold: distinguishability requires *p* \< 0.1 for “not distinguishable” failure mode).
 - **H2 verdict (synergy correlates with fuzzy_count):** FAIL — Spearman *ρ*(synergy, `avg_fuzzy_count`) ≈ 0.11 (*p* ≈ 0.41) for WB/BROJA/PPID (latter two identical to WB here).
-- **H3 verdict (methods agree):** GRACEFUL_FAIL — `dit` unavailable in this environment (import fails on NumPy 2.x); BROJA and PPID collapse to Williams–Beer; rank correlations are not informative.
+- **H3 verdict (methods agree):** GRACEFUL_FAIL — `dit` unavailable in this environment (import fails on NumPy 2.x); BROJA and PPID collapse to the default PID decomposition; rank correlations are not informative.
 - **Composite verdict:** FAIL on primary quantitative claims (H1 + H2). H3 is not testable as stated without a working `dit`/compatible NumPy stack.
-- **Implication for Mediano letter:** Reframe as **non-homomorphism without quantitative PID claims** unless future work pins synergy structure with a repaired toolchain and stronger effects on this library; any PID wording should be **Williams–Beer–specific** and clearly labeled exploratory if retained.
+- **Implication:** Present **non-homomorphism without quantitative PID claims** unless future work pins synergy structure with a repaired toolchain and stronger effects on this library; label exploratory PID results explicitly.
+
+---
+
+## Round D: Game Complex GC(φ) and DPLL coupling
+
+### Setup
+
+- **Initial pass:** *n* ∈ {3, 4, 5}, *m*/*n* ∈ {1.0, 2.0, 3.0, 4.27, 5.0}, 20 instances per (*n*, ratio) cell; `max_dim_homology` = 3.
+- **Scaling sanity check:** *n* ∈ {6, 7}, *m*/*n* ∈ {2.0, 4.27, 5.0}, 10 instances per cell, `scaling_max_dim` = 2 for tractability.
+- Each instance: GC(φ), Betti (GUDHI or F₂ chain fallback), DPLL with randomized variable orderings.
+- **`dpll_correlation`:** marginal Spearman + bootstrap + **partial** correlations controlling for size proxies (`n_simplices_total`, `n_full_order`, `n_cover_relations`); uses **pingouin** when installed else rank-residualization (**scikit-learn**).
+
+### Findings (populate after `papermill`)
+
+**Marginal correlations:**
+
+- Strongest: *[invariant], n=[n], ρ = [value]*
+- Robust across regimes: *[list]*
+- Direction: *[positive / negative / mixed]* — *[interpretation]*
+
+**Partial correlations (controlling for size invariants):**
+
+- Mean shrinkage of |ρ| after controlling for size: *[value]*
+- Homology invariants with significant partial *r*: *[list]*
+- Implication: homology carries *[independent / dependent]* signal beyond size *(Scenario X vs Y from notebook)*
+
+**Scaling (*n* = 6, 7):**
+
+- Verdict: *[from `gc_phi_scaling_summary.json`]*
+- Mean |ρ| trend across *n*: *[±value]*
+
+**Phase plot (`fig_gc_phi_phase.pdf`):**
+
+- *[Topological richness vs m/n; relation to SAT transition ~4.27]*
+
+### Final consolidated verdict
+
+*[Copy from `dpll_correlation` notebook output: STRONG PASS / PASS / PARTIAL / FAIL]*
+
+### Implications
+
+- **STRONG PASS:** GC(φ) topology as independent structural signal — paper-scale claim plausible.
+- **PASS (size-driven):** Reframe to “GC(φ) **size** ↔ DPLL hardness.”
+- **PARTIAL / FAIL:** Hypothesis needs reformulation or larger *n*.
