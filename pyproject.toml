@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "conway-foundations"
+version = "0.0.0"
+description = "Computational verification for Conway Machine and CGT-grounded complexity research"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "pandas>=2.2",
+    "networkx>=3.2",
+    "matplotlib>=3.8",
+    "joblib>=1.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "pytest-cov>=4",
+    "hypothesis>=6",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pre-commit>=3.7",
+]
+notebooks = [
+    "jupyterlab>=4",
+    "papermill>=2.5",
+    "nbstripout>=0.7",
+    "jupytext>=1.16",
+    "nbqa>=1.8",
+    "nbval>=0.11",
+    "ipywidgets>=8",
+]
+synergy = [
+    "dit>=1.5",
+]
+topology = [
+    "gudhi>=3.9",
+]
+all = [
+    "conway-foundations[dev,notebooks,synergy,topology]",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/conway_foundations"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks/**" = ["E402"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.jupytext]
+formats = "ipynb,py:percent"
+notebook_metadata_filter = "kernelspec,jupytext"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-v --tb=short"
