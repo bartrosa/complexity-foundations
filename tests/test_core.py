@@ -5,10 +5,17 @@ from conway_foundations.games.arithmetic import add, clear_arithmetic_cache, equ
 from conway_foundations.games.library import (
     DOWN,
     NEG_ONE,
+    NEG_THREE,
     ONE,
     STAR,
     STAR_2,
+    STAR_3,
+    STAR_4,
+    SWITCH_HALF,
+    SWITCH_NEG_HALF,
+    THREE,
     UP,
+    UP_UP,
     ZERO,
     _integer_game,
 )
@@ -41,6 +48,23 @@ class TestCanonicalOutcomes:
     def test_star_two(self):
         assert outcome(STAR_2) == "∥"
 
+    def test_three(self):
+        assert outcome(THREE) == "L"
+
+    def test_neg_three(self):
+        assert outcome(NEG_THREE) == "R"
+
+    def test_star_three_four(self):
+        assert outcome(STAR_3) == "∥"
+        assert outcome(STAR_4) == "∥"
+
+    def test_up_up(self):
+        assert outcome(UP_UP) == "L"
+
+    def test_switch_half_games(self):
+        assert outcome(SWITCH_HALF) == "∥"
+        assert outcome(SWITCH_NEG_HALF) == "∥"
+
 
 class TestArithmetic:
     """Disjunctive sum and negation."""
@@ -52,11 +76,11 @@ class TestArithmetic:
         assert outcome(add(ONE, NEG_ONE)) == "="
 
     def test_canonical_witness_up_star(self):
-        """The Mediano letter witness."""
+        """Canonical non-homomorphism witness (↑ + *)."""
         assert outcome(add(UP, STAR)) == "∥"
 
     def test_canonical_witness_one_star(self):
-        """The Mediano letter contrast."""
+        """Contrast pair (1 + *)."""
         assert outcome(add(ONE, STAR)) == "L"
 
     def test_zero_is_identity(self):

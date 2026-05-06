@@ -31,7 +31,7 @@ jobs:
       - name: Execute notebooks
         run: |
           mkdir -p notebooks_executed
-          for nb in notebooks/[0-9]*.ipynb; do
+          for nb in notebooks/[0-9]*.ipynb notebooks/[a-z]*.ipynb; do
             if [ -f "$nb" ]; then
               papermill "$nb" "notebooks_executed/$(basename $nb)" \
                 --kernel python3

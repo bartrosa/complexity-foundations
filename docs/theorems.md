@@ -10,6 +10,6 @@ Status legend: [Lean-verified] [Computed] [Narrative]
 
 (empty)
 
-## Mediano letter claims
+## Short-paper claims (non-homomorphism)
 
 (empty)

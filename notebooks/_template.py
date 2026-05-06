@@ -24,8 +24,8 @@
 # %% tags=["parameters"]
 # Papermill parameters - override via papermill -p key value
 random_seed = 42
-output_dir = '../data'
-figures_dir = '../figures'
+output_dir = 'data'
+figures_dir = 'figures'
 n_jobs = -1
 
 # %%

@@ -23,3 +23,6 @@ figures/.pdf
 figures/.png
 !data/.gitkeep
 !figures/.gitkeep
+
+data/
+figures/
